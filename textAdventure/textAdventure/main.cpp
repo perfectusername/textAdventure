@@ -6,7 +6,7 @@ int main()
 {
 	string		itemName = "Test Item Name";
 	int		itemID = 42069;
-	int		itemState = 2;
+	int		itemState = 0;
 	list<string>	lookList{ "Look phrase 1", "Look phrase 2" };
 	list<string>	takeList{ "Take phrase 1", "Take phrase 2" };
 	list<string>	useList{ "Use phrase 1", "Use phrase 2" };
