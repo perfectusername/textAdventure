@@ -12,10 +12,13 @@ public:
 	Item(string& itemName, int& itemID, int& itemState, list<string>& lookList, list<string>& takeList, list<string>& useList);
 	~Item();
 
+	int getItemID();
+
 	string getLookPhrase();
 	string getTakePhrase();
 	string getUsePhrase();
-	string getStatePhrase(list<string>& aList);
+	string getUsePhrase(int& phraseState);
+	string getStatePhrase(list<string>& aList, int& phraseState);
 
 	int display();
 

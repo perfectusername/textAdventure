@@ -145,22 +145,33 @@ int Item::display()
 	return successValue;
 }
 
+
+int Item::getItemID()
+{
+	return _itemID;
+}
+
 string Item::getLookPhrase()
 {
-	return getStatePhrase(*_lookList);
+	return getStatePhrase(*_lookList, _itemState);
 }
 
 string Item::getTakePhrase()
 {
-	return getStatePhrase(*_takeList);
+	return getStatePhrase(*_takeList, _itemState);
 }
 
 string Item::getUsePhrase()
 {
-	return getStatePhrase(*_useList);
+	return getStatePhrase(*_useList, _itemState);
 }
 
-string Item::getStatePhrase(list<string>& aList)
+string Item::getUsePhrase(int& phraseState)
+{
+	return getStatePhrase(*_useList, phraseState);
+}
+
+string Item::getStatePhrase(list<string>& aList, int& phraseState)
 {
 	list<string>::iterator	currentPhrase;
 	string			statePhrase = "\n";
