@@ -1,24 +1,44 @@
-#include "utilities.h"
+#include "door.h"
 
 // Reference materials for lists
 // https://www.techiedelight.com/initialize-std-list-cpp/
 // https://thispointer.com/c-how-to-copy-clone-a-stl-list-or-sub-list/
 // https://www.cplusplus.com/reference/list/list/
 
-struct Item
+
+
+
+class Item
 {
 public:
 	Item();
-	Item(string& itemName, int& itemID, int& itemState, list<string>& lookList, list<string>& takeList, list<string>& useList);
+	Item(
+		const string& itemName,
+		const int& itemID,
+		const int& itemState,
+		const list<string>& lookPhrases,
+		const list<int>& lookFlag,
+		const list<string>& takePhrases,
+		const list<int>& takeFlag,
+		const list<list<tuple<string, int, int>>>& usableWithList,
+		const list<string>& searchPhrases,
+		const list<int>& searchFlag,
+		const list<Item>& itemsContained,
+		const list<string>& climbPhrases,
+		const list<int>& climbFlag,
+		const list<string>& equipPhrases,
+		const list<int>& equipFlag);
+	Item(const Item& anItem);
 	~Item();
 
 	int getItemID();
+	string getItemName();
 
 	string getLookPhrase();
 	string getTakePhrase();
-	string getUsePhrase();
-	string getUsePhrase(int& phraseState);
-	string getStatePhrase(list<string>& aList, int& phraseState);
+	
+	string useItemWith(Door& aDoor);
+	string useItemWith(Item& anItem);
 
 	int display();
 
@@ -28,12 +48,48 @@ private:
 	int		_itemID;
 	int		_itemState;
 
-	list<string>*	_lookList;	// List of look command outputs
-	list<string>*	_takeList;	// List of take command outputs
-	list<string>*	_useList;	// List of use command outputs
+	list<string>*	_lookPhrases;	// List of look command outputs
+	list<int>*	_lookFlag;
 
-	int initialize(string& itemName, int& itemID, int& itemState, list<string>& lookList, list<string>& takeList, list<string>& useList);
+	list<string>*	_takePhrases;	// List of take command outputs
+	list<int>*	_takeFlag;
+
+	list<list<tuple<string, int, int>>>* _usableWithList;
+
+	list<string>*	_searchPhrases;
+	list<int>*	_searchFlag;
+	list<Item>*	_itemsContained;
+
+	list<string>*	_climbPhrases;
+	list<int>*	_climbFlag;
+
+	list<string>*	_equipPhrases;
+	list<int>*	_equipFlag;
+
+	
+
+	int initialize(
+		const string& itemName,
+		const int& itemID,
+		const int& itemState,
+		const list<string>& lookPhrases,
+		const list<int>& lookFlag,
+		const list<string>& takePhrases,
+		const list<int>& takeFlag,
+		const list<list<tuple<string, int, int>>>& usableWithList,
+		const list<string>& searchPhrases,
+		const list<int>& searchFlag,
+		const list<Item>& itemsContained,
+		const list<string>& climbPhrases,
+		const list<int>& climbFlag,
+		const list<string>& equipPhrases,
+		const list<int>& equipFlag);
 	int deleteItem();
+
+	string getStateValue(list<string>& aList, int& phraseState);
+
+	// Flags
+
 };
 
 /*

@@ -1,34 +1,12 @@
 #include "item.h"
 
-class Door
-{
-public:
-	Door();
-	Door(int& doorID, int& destinationRoomID, int& locked);
 
-	//
-	// Returns 0 if unlocked, 1 if locked
-	int	isLocked();
-	//
-	// Returns 1 for success, -1 if door is not locked, and 0 if it is the wrong key (but it is locked)
-	int	tryKey(int& keyID);
-	//
-	// Returns 0 if door cannot be opened, 1 if door successfully opens
-	int	openDoor();
-
-private:
-	int	_doorID;		// ID number of this door. Will match the keyID.
-	int	_destinationRoomID;	// _roomID of the room on the other side of the door
-	int	_locked;		// Will be 0 if unlocked, 1 if locked
-
-	// NOTE: Keys will just be regular Item objects
-};
 
 
 class Room
 {
 public:
-	int addItemToRoom;
+
 private:
 	int		_roomID;
 	string		_roomDescription;
@@ -40,10 +18,10 @@ private:
 
 /*
 	Rooms contain:
-		- objects
-		- doors
-		- events
-		- npcs?
+		- Items
+		- Doors
+		- GameEvents
+		- NPC?
  
 	Rooms offer a series of different gameEvents which can occur:
 

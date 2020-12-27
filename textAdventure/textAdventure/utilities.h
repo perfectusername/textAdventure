@@ -4,6 +4,7 @@
 #include <time.h>
 #include <fstream>
 #include <list>
+#include <tuple>
 
 using namespace std;
 
@@ -39,6 +40,19 @@ int compareChar(const char& char1, const char& char2);
 void cStringToLowercase(char cString[], const int stringLength);
 bool cStringToInt(const char input[], int& output);
 void stringCopy(char destination[], const int& stringLength, const char source[]);
+
+
+// List Utilities
+//
+// Take Item from list
+int takeFromListl(list<string>& destinationList, list<string>& sourceList, int& stringPosition);
+int takeFromList(list<int>& destinationList, list<int>& sourceList, int& valueToRemove);
+// Deallocation Utilities
+//
+// Deallocate a list
+int deleteList(list<string>*& aList);
+int deleteList(list<int>*& aList);
+int deleteList(list<list<tuple<string, int, int>>>*& aList);
 
 // Design Tools
 void printCharacters(const int& width, const string& designCharacter);

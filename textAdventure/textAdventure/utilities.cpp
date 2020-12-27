@@ -1,5 +1,7 @@
 #include "utilities.h"
 
+
+
 //ERROR UTILITIES
 //
 // Check to see if there is a nonspace character sitting in the input stream
@@ -299,6 +301,152 @@ void stringCopy(char destination[], const int& stringLength, const char source[]
         //strcpy(destination, source);
         strcpy_s(destination, stringLength, source);
 }
+
+
+
+// List Utilities
+//
+// Take an object from the argument list and put it into the calling list
+// Returns the position of the added item in the new list for success, -1 for failure
+int takeFromListl(list<string>& destinationList, list<string>& sourceList, int& stringPosition)
+{
+        int                     destinationPosition = 0;
+        int                     sourceSize = sourceList.size();
+        list<string>::iterator  currentString;
+
+        // If the list is not empty
+        // AND the position is not too large to be in the list
+        if ((sourceSize > 0) && (stringPosition < sourceSize))
+        {
+                // Set currentString to the beginning of the sourceList
+                currentString = sourceList.begin();
+
+                // Iterate to the desired location
+                advance(currentString, stringPosition);
+
+                // Copy the item over to the destination list
+                destinationList.push_back(*currentString);
+
+                // Erase the item from the source list
+                sourceList.erase(currentString);
+
+                // The 
+                destinationPosition = (destinationList.size() - 1);
+        }
+        else
+        {
+                destinationPosition = -1;
+        }
+
+        // Outputs the position of the new item (which is the list size minus 1)
+        return destinationPosition;
+}
+// Returns   0 if source is empty or the valueToAdd doesn't exist in the source list
+//          -1 if the value already exists in the destination list
+//           1 if the value was successfully added to the destination list and removed from the source list
+int takeFromList(list<int>& destinationList, list<int>& sourceList, int& valueToRemove)
+{
+        int                     successValue = 0;
+        list<int>::iterator     currentSource;
+        list<int>::iterator     currentDestination;
+        
+        
+        // If the source list is not empty
+        if (sourceList.size() > 0)
+        {
+                // Set currentSource to the beginning of the source list
+                currentSource = sourceList.begin();
+
+                // While we have not already succeeded
+                // AND while the value of our current in the source list is less than or equal to
+                // the one we want to remove
+                while ((successValue != 1) && (*currentSource <= valueToRemove))
+                {
+                        // If we have found the valueToRemove in the source list
+                        if (*currentSource == valueToRemove)
+                        {
+                                currentDestination = destinationList.begin();
+
+                                // Iterate to the correct location in the destination list
+                                while (*currentDestination <= *currentSource)
+                                {
+                                        ++currentDestination;
+                                }
+
+                                // If the source does not exist in the destination add it
+                                if (*currentDestination != *currentSource)
+                                {
+                                        // Copy the item over to the destination list
+                                        destinationList.insert(currentDestination, *currentSource);
+
+                                        // Erase the item from the source list
+                                        sourceList.erase(currentSource);
+
+                                        successValue = 1;
+                                }
+                                // Otherwise the source already exists in the destination, so return error
+                                else
+                                {
+                                        successValue = -1;
+                                }
+                        }
+                        // Otherwise we have not found the valueToRemove in the source list
+                        else
+                        {
+                                ++currentSource;
+                        }
+                }
+        }
+
+        return successValue;
+}
+
+
+// Deallocation Utilities
+//
+// Deallocate a string list
+int deleteList(list<string>*& aList)
+{
+        int	successValue = 0;
+
+        if (aList != nullptr)
+        {
+                aList->clear();
+                delete aList;
+                aList = nullptr;
+        }
+
+        return successValue;
+}
+// Deallocate an int list
+int deleteList(list<int>*& aList)
+{
+        int	successValue = 0;
+
+        if (aList != nullptr)
+        {
+                aList->clear();
+                delete aList;
+                aList = nullptr;
+        }
+
+        return successValue;
+}
+//
+int deleteList(list<list<tuple<string, int, int>>>*& aList)
+{
+        int	successValue = 0;
+
+        if (aList != nullptr)
+        {
+                aList->clear();
+                delete aList;
+                aList = nullptr;
+        }
+
+        return successValue;
+}
+
 
 // Design Tools
 //
