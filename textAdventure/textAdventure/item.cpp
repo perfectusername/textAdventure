@@ -367,7 +367,7 @@ string Item::useItemWith(Item& anItem)
 				++singleItr;
 			}
 			++nestedItr;
-		}
+		}	
 	}
 
 	/*

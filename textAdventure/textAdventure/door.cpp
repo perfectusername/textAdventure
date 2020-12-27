@@ -16,13 +16,12 @@ Door::Door()
 	_lookFlag = nullptr;
 }
 
-Door::Door(
-	const int& doorID,
+Door::Door(const int& doorID,
 	const int& doorState,
 	const list<int>& destinationRoomID,
 	const list<int>& locked,
 	const list<int>& keyID,
-	const list<string>& openPhrases,
+	const list<list<string>>& openPhrases,
 	const list<string>& unlockPhrases,
 	const list<string>& lookPhrases,
 	const list<int>& lookFlag)
@@ -58,7 +57,7 @@ int Door::initialize(
 	const list<int>& destinationRoomID,
 	const list<int>& locked,
 	const list<int>& keyID,
-	const list<string>& openPhrases,
+	const list<list<string>>& openPhrases,
 	const list<string>& unlockPhrases,
 	const list<string>& lookPhrases,
 	const list<int>& lookFlag)
@@ -77,7 +76,7 @@ int Door::initialize(
 		_locked = new list<int>(locked);
 		_keyID = new list<int>(keyID);
 
-		_openPhrases = new list<string>(openPhrases);
+		_openPhrases = new list<list<string>>(openPhrases);
 		_unlockPhrases = new list<string>(unlockPhrases);
 		_lookPhrases = new list<string>(lookPhrases);
 		_lookFlag = new list<int>(lookFlag);
@@ -110,7 +109,13 @@ int Door::deleteDoor()
 
 
 	// If all pointers are null then return success
-	if ((_lookPhrases == nullptr) && (_openPhrases == nullptr))
+	if ((_destinationRoomID == nullptr) &&
+		(_locked == nullptr) &&
+		(_keyID == nullptr) &&
+		(_openPhrases == nullptr) &&
+		(_unlockPhrases == nullptr) &&
+		(_lookPhrases == nullptr) &&
+		(_lookFlag == nullptr))
 	{
 		successValue = 1;
 	}
@@ -175,6 +180,8 @@ string Door::unlock(int& keyID)
 	return getUnlockPhrase(successValue);
 }
 
+
+
 int Door::setToUnlocked()
 {
 	int successValue = 0;
@@ -203,7 +210,30 @@ string Door::getLookPhrase()
 
 string Door::getOpenPhrase(int& openSuccessValue)
 {
-	return getStateValue(*_openPhrases, openSuccessValue);
+	int	i = 0;
+	int	n = 0;
+	int	lockedValue = getLockedValue();
+	string	returnString;
+	list<list<string>>::iterator nestedItr = _openPhrases->begin();
+
+
+
+	while (n < _doorState)
+	{
+		++nestedItr;
+		++n;
+	}
+	list<string>& singlePtr = *nestedItr;
+	list<string>::iterator singleItr = singlePtr.begin();
+
+
+	while (i < lockedValue)
+	{
+		++singleItr;
+		++i;
+	}
+
+	return *singleItr;
 }
 
 string Door::getUnlockPhrase(int& lockSuccessValue)
@@ -211,6 +241,11 @@ string Door::getUnlockPhrase(int& lockSuccessValue)
 	return getStateValue(*_unlockPhrases, lockSuccessValue);
 }
 
+
+void Door::setStateValue(int& stateValue)
+{
+	_doorState = stateValue;
+}
 
 string Door::getStateValue(list<string>& aList, int& phraseState)
 {

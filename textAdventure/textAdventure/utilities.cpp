@@ -430,6 +430,11 @@ int deleteList(list<int>*& aList)
                 aList = nullptr;
         }
 
+        if (aList == nullptr)
+        {
+                successValue = 1;
+        }
+
         return successValue;
 }
 //
@@ -444,9 +449,33 @@ int deleteList(list<list<tuple<string, int, int>>>*& aList)
                 aList = nullptr;
         }
 
+        if (aList == nullptr)
+        {
+                successValue = 1;
+        }
+
         return successValue;
 }
 
+
+int deleteList(list<list<string>>*& aList)
+{
+        int successValue = 0;
+
+        if (aList != nullptr)
+        {
+                aList->clear();
+                delete aList;
+                aList = nullptr;
+        }
+
+        if (aList == nullptr)
+        {
+                successValue = 1;
+        }
+
+        return successValue;
+}
 
 // Design Tools
 //

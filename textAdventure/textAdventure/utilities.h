@@ -53,6 +53,7 @@ int takeFromList(list<int>& destinationList, list<int>& sourceList, int& valueTo
 int deleteList(list<string>*& aList);
 int deleteList(list<int>*& aList);
 int deleteList(list<list<tuple<string, int, int>>>*& aList);
+int deleteList(list<list<string>>*& aList);
 
 // Design Tools
 void printCharacters(const int& width, const string& designCharacter);
