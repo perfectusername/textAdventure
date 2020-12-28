@@ -7,7 +7,9 @@ Door::Door()
 	_doorState = 0;
 
 	_destinationRoomID = nullptr;
-	_locked = nullptr;
+	_defaultLocked = nullptr;
+	_unlockedValue = nullptr;
+	_lockedPointer = nullptr;
 	_keyID = nullptr;
 
 	_openPhrases = nullptr;
@@ -16,10 +18,12 @@ Door::Door()
 	_lookFlag = nullptr;
 }
 
-Door::Door(const int& doorID,
+Door::Door(
+	const int& doorID,
 	const int& doorState,
 	const list<int>& destinationRoomID,
-	const list<int>& locked,
+	const list<int>& defaultLocked,
+	const list<int>& unlockedValue,
 	const list<int>& keyID,
 	const list<list<string>>& openPhrases,
 	const list<string>& unlockPhrases,
@@ -27,7 +31,9 @@ Door::Door(const int& doorID,
 	const list<int>& lookFlag)
 {
 	_destinationRoomID = nullptr;
-	_locked = nullptr;
+	_defaultLocked = nullptr;
+	_unlockedValue = nullptr;
+	_lockedPointer = nullptr;
 	_keyID = nullptr;
 
 	_openPhrases = nullptr;
@@ -38,7 +44,8 @@ Door::Door(const int& doorID,
 	initialize(doorID, 
 		doorState,
 		destinationRoomID,
-		locked,
+		defaultLocked,
+		unlockedValue,
 		keyID,
 		openPhrases,
 		unlockPhrases,
@@ -55,7 +62,8 @@ int Door::initialize(
 	const int& doorID,
 	const int& doorState,
 	const list<int>& destinationRoomID,
-	const list<int>& locked,
+	const list<int>& defaultLocked,
+	const list<int>& unlockedValue,
 	const list<int>& keyID,
 	const list<list<string>>& openPhrases,
 	const list<string>& unlockPhrases,
@@ -73,7 +81,9 @@ int Door::initialize(
 
 		// Use the list copy constructor to clone the incoming lists
 		_destinationRoomID = new list<int>(destinationRoomID);
-		_locked = new list<int>(locked);
+		_defaultLocked = new list<int>(defaultLocked);
+		_unlockedValue = new list<int>(unlockedValue);
+		_lockedPointer = &_defaultLocked;
 		_keyID = new list<int>(keyID);
 
 		_openPhrases = new list<list<string>>(openPhrases);
@@ -95,12 +105,14 @@ int Door::deleteDoor()
 
 	_doorID = 0;
 	_destinationRoomID = 0;
-	_locked = 0;
+	_defaultLocked = 0;
 	_keyID = 0;
 	_doorState = 0;
 
 	deleteList(_destinationRoomID);
-	deleteList(_locked);
+	deleteList(_defaultLocked);
+	deleteList(_unlockedValue);
+	_lockedPointer = nullptr;
 	deleteList(_keyID);
 	deleteList(_openPhrases);
 	deleteList(_unlockPhrases);
@@ -110,7 +122,7 @@ int Door::deleteDoor()
 
 	// If all pointers are null then return success
 	if ((_destinationRoomID == nullptr) &&
-		(_locked == nullptr) &&
+		(_defaultLocked == nullptr) &&
 		(_keyID == nullptr) &&
 		(_openPhrases == nullptr) &&
 		(_unlockPhrases == nullptr) &&
@@ -129,10 +141,11 @@ int Door::getDestinationRoomID()
 	return(getStateValue(*_destinationRoomID, _doorState));
 }
 
-// Get _locked status for curent _doorState
+// Get _defaultLocked status for curent _doorState
 int Door::getLockedValue()
 {
-	return(getStateValue(*_locked, _doorState));
+	int lockedValue = getStateValue(**_lockedPointer, _doorState);
+	return(lockedValue);
 }
 
 // Get _keyID status for current _doorState
@@ -143,8 +156,8 @@ int Door::getKeyID()
 
 
 // Returns:
-//	0 if door is already unlocked
-//	1 if the door was successfully unlocked
+//	0 if door is already undefaultLocked
+//	1 if the door was successfully undefaultLocked
 //	2 if the key does not open the door
 //	3 if the door is currently unlockable
 string Door::unlock(int& keyID)
@@ -152,11 +165,11 @@ string Door::unlock(int& keyID)
 	int	successValue = 0;
 	string	returnString;
 
-	// If the door is not already unlocked successValue = 0
+	// If the door is not already undefaultLocked successValue = 0
 	if (getLockedValue() == 1)
 	{
 		//If the door is currently impassable (not unlockable)
-		// then the _keyValue will be 0 and the _locked value will be 1
+		// then the _keyValue will be 0 and the _defaultLocked value will be 1
 		if (getKeyID() == 0)
 		{
 			successValue = 3;
@@ -167,7 +180,8 @@ string Door::unlock(int& keyID)
 			// then unlock the door
 			if (keyID == getKeyID())
 			{
-				successValue = setToUnlocked();
+				setToUnlocked();
+				successValue = 1; 
 			}
 			// Otherwise the keyID does not match the _keyID
 			else
@@ -180,27 +194,21 @@ string Door::unlock(int& keyID)
 	return getUnlockPhrase(successValue);
 }
 
+	
 
-
-int Door::setToUnlocked()
+void Door::setToUnlocked()
 {
-	int successValue = 0;
-	list<int>::iterator lockedItr = _locked->begin();
-
-	// Set all locked values to 0
-	while (lockedItr != _locked->end())
-	{
-		*lockedItr = 0;
-		++lockedItr;
-	}
-	successValue = 1;
-
-	return successValue;
+	_lockedPointer = &_unlockedValue;
+}
+//
+void Door::setLockedToDefault()
+{
+	_lockedPointer = &_defaultLocked;
 }
 string Door::openDoor()
 {
-	int lockedValue = getLockedValue();
-	return getOpenPhrase(lockedValue);
+	int defaultLockedValue = getLockedValue();
+	return getOpenPhrase(defaultLockedValue);
 }
 
 string Door::getLookPhrase()
@@ -212,7 +220,7 @@ string Door::getOpenPhrase(int& openSuccessValue)
 {
 	int	i = 0;
 	int	n = 0;
-	int	lockedValue = getLockedValue();
+	int	defaultLockedValue = getLockedValue();
 	string	returnString;
 	list<list<string>>::iterator nestedItr = _openPhrases->begin();
 
@@ -227,7 +235,7 @@ string Door::getOpenPhrase(int& openSuccessValue)
 	list<string>::iterator singleItr = singlePtr.begin();
 
 
-	while (i < lockedValue)
+	while (i < defaultLockedValue)
 	{
 		++singleItr;
 		++i;

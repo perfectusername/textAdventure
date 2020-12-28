@@ -208,7 +208,7 @@ int main()
 	equipFlagBuffer = { 0, 0 , 1, 0 };
 
 
-	Item	anItem(
+	Item	table(
 		itemNameBuffer,
 		itemIDBuffer,
 		itemStateBuffer,
@@ -225,7 +225,7 @@ int main()
 		equipPhrasesBuffer,
 		equipFlagBuffer);
 
-	anItem.display();
+	table.display();
 
 
 	//////////////////////////////////////////////////////////////////
@@ -245,7 +245,8 @@ int main()
 	list<int>	destinationRoomIDBuffer{ 2, 0, 3 };
 	list<int>	keyIDBuffer{ 1, 0, 0 };
 
-	list<int>	lockedBuffer{ 1, 1, 0 };
+	list<int>	defaultLockedBuffer{ 1, 1, 0 };
+	list<int>	unlockedValueBuffer{ 0, 0, 0 };
 	list<list<string>> openPhrasesBuffer{ { "You open the unlocked door and step through.",
 						"You can't open the door because it's locked." },
 
@@ -254,7 +255,7 @@ int main()
 
 						{"You step over the pile of ashes and step through the archway. \nHowever, the fire has weakened the floor and you fall through into a secret cavern." } };
 
-	list<string>	unlockPhrasesBuffer{ "The door is already unlocked", 
+	list<string>	unlockPhrasesBuffer{ "The door isn't locked.", 
 						"You hear a click. The door is unlocked!!", 
 						"This item does not fit the lock.",
 						"The door is on fire and impassable." };
@@ -265,16 +266,16 @@ int main()
 				"There is an open archway and a pile of ashes where the door once stood." };
 	lookFlagBuffer = { 1 , 1 , 1 };
 
-	Door	testDoor(
-			doorIDBuffer,
-			doorStateBuffer,
-			destinationRoomIDBuffer,
-			lockedBuffer,
-			keyIDBuffer,
-			openPhrasesBuffer,
-			unlockPhrasesBuffer,
-			lookPhrasesBuffer,
-			lookFlagBuffer);
+	Door	testDoor(doorIDBuffer,
+				doorStateBuffer,
+				destinationRoomIDBuffer,
+				defaultLockedBuffer,
+				unlockedValueBuffer,
+				keyIDBuffer,
+				openPhrasesBuffer,
+				unlockPhrasesBuffer,
+				lookPhrasesBuffer,
+				lookFlagBuffer);
 
 	string	doorTestValue;
 
@@ -288,6 +289,9 @@ int main()
 			2 - Pile of ashes
 	*/
 	// Look
+
+	cout << "//////////////////////////////////" << endl;
+	cout << "DOOR: LOOK" << endl;
 	cout << endl;
 	cout << "STATE 0: (Normal)" << endl;
 	cout << "===============" << endl;
@@ -315,13 +319,15 @@ int main()
 	cout << endl;
 	cout << endl;
 
+	cout << "//////////////////////////////////" << endl;
+	cout << "DOOR: OPEN (LOCKED)" << endl;
 	////////////////////////////////////////////////////////
-	// Open Testing (default locked status)
+	// Open Testing (default defaultLocked status)
 	// set state to 0 and try to open it
 	doorStateBuffer = 0;
 	testDoor.setStateValue(doorStateBuffer);
 	cout << endl;
-	cout << "STATE 0: (Normal) (locked)" << endl;
+	cout << "STATE 0: (Normal) (default)" << endl;
 	cout << "===============" << endl;
 	cout << "You try to open the door:" << endl;
 	cout << testDoor.openDoor() << endl;
@@ -331,7 +337,7 @@ int main()
 	doorStateBuffer = 1;
 	testDoor.setStateValue(doorStateBuffer);
 	cout << endl;
-	cout << "STATE 1: (On fire) (locked)" << endl;
+	cout << "STATE 1: (On fire) (default)" << endl;
 	cout << "==================" << endl;
 	cout << "You try to open the door:" << endl;
 	cout << testDoor.openDoor() << endl;
@@ -341,11 +347,14 @@ int main()
 	doorStateBuffer = 2;
 	testDoor.setStateValue(doorStateBuffer);
 	cout << endl;
-	cout << "STATE 2: (Pile of Ashes) (locked)" << endl;
+	cout << "STATE 2: (Pile of Ashes) (default)" << endl;
 	cout << "==================" << endl;
 	cout << "You try to open the door:" << endl;
 	cout << testDoor.openDoor() << endl;
 
+	cout << endl;
+	cout << "//////////////////////////////////" << endl;
+	cout << "DOOR: OPEN (UNLOCKED)" << endl;
 	//////////////////////////////////////////////
 	// Open Testing (unlocked)
 	// set state to 0 and try to open it
@@ -367,7 +376,6 @@ int main()
 	cout << "==================" << endl;
 	cout << "You try to open the door:" << endl;
 	cout << testDoor.openDoor() << endl;
-
 	//
 	// Set state to 2 and look again
 	doorStateBuffer = 2;
@@ -376,31 +384,84 @@ int main()
 	cout << "STATE 2: (Pile of Ashes) (unlocked)" << endl;
 	cout << "==================" << endl;
 	cout << "You try to open the door:" << endl;
-	cout << testDoor.openDoor() << endl;
+	cout << testDoor.openDoor() << endl << endl;
 
-	/*
-	// Unlock Testing
+	// Unlock testing
+	cout << "//////////////////////////////////" << endl;
+	cout << "DOOR: UNLOCK (WRONG KEY)" << endl;
 
-	Item* testKey;
-	// Try to use the wrong key to unlock the door
-	testKey = &anItem;
-	cout << "You try to use a " << testKey->getItemName() << " on the door:" << endl;
-	keyValue = testKey->getItemID();
+	
+	int keyValue = table.getItemID();
+	testDoor.setLockedToDefault();
+
+	
+	///////////// Unlock Testing
+	// WRONG key
+	doorStateBuffer = 0;
+	testDoor.setStateValue(doorStateBuffer);
+	cout << endl;
+	cout << "STATE 0: (Normal Door) (Default - try to unlock with wrong key)" << endl;
+	cout << "==================" << endl;
+	cout << "You try to open the door with a " << table.getItemName() << ". ";
 	cout << testDoor.unlock(keyValue) << endl;
-	cout << endl;
 
-	// Try to use the right key to unlock the door
-	testKey = &key;
-	cout << "You try to use a " << testKey->getItemName() << " on the door:" << endl;
-	keyValue = testKey->getItemID();
+	doorStateBuffer = 1;
+	testDoor.setStateValue(doorStateBuffer);
+
+	cout << endl;
+	cout << "STATE 1: (Door on fire) (Default - try to unlock with wrong key)" << endl;
+	cout << "==================" << endl;
+	cout << "You try to open the door with a " << table.getItemName() << ". " ;
 	cout << testDoor.unlock(keyValue) << endl;
-	cout << endl;
 
-	// Try to open the unlocked door
-	cout << "You try to open the door:" << endl;
-	cout << testDoor.openDoor() << endl;
-	cout << endl;
-	*/
+	doorStateBuffer = 2;
+	testDoor.setStateValue(doorStateBuffer);
 
+	cout << endl;
+	cout << "STATE 2: (Pile of ashes) (Default - try to unlock with wrong key)" << endl;
+	cout << "==================" << endl;
+	cout << "You try to open the door with a " << table.getItemName() << ". ";
+	cout << testDoor.unlock(keyValue) << endl << endl;
+
+
+
+	// RIGHT key
+	cout << "//////////////////////////////////" << endl;
+	cout << "DOOR: UNLOCK (RIGHT KEY)" << endl;
+	keyValue = key.getItemID();
+
+	doorStateBuffer = 0;
+	testDoor.setStateValue(doorStateBuffer);
+	cout << endl;
+	cout << "STATE 0: (Normal Door) (Default - try to unlock with right key)" << endl;
+	cout << "==================" << endl;
+	cout << "You try to open the door with a " << key.getItemName() << ". ";
+	cout << testDoor.unlock(keyValue) << endl;
+
+	doorStateBuffer = 1;
+	testDoor.setStateValue(doorStateBuffer);
+	testDoor.setLockedToDefault();
+
+
+	cout << endl;
+	cout << "STATE 1: (Door on fire) (Default - try to unlock with right key)" << endl;
+	cout << "==================" << endl;
+	cout << "You try to open the door with a " << key.getItemName() << ". ";
+	cout << testDoor.unlock(keyValue) << endl;
+
+	doorStateBuffer = 2;
+	testDoor.setStateValue(doorStateBuffer);
+	testDoor.setLockedToDefault();
+
+
+	cout << endl;
+	cout << "STATE 2: (Pile of ashes) (Default - try to unlock with right key)" << endl;
+	cout << "==================" << endl;
+	cout << "You try to open the door with a " << key.getItemName() << ". ";
+	cout << testDoor.unlock(keyValue) << endl;
+
+
+
+	
 	return 0;
 }

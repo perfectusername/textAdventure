@@ -12,8 +12,7 @@ class Item
 {
 public:
 	Item();
-	Item(
-		const string& itemName,
+	Item(const string& itemName,
 		const int& itemID,
 		const int& itemState,
 		const list<string>& lookPhrases,

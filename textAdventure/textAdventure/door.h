@@ -9,7 +9,8 @@ public:
 	Door(const int& doorID,
 		const int& doorState,
 		const list<int>& destinationRoomID,
-		const list<int>& locked,
+		const list<int>& defaultLocked,
+		const list<int>& unlockedValue,
 		const list<int>& keyID,
 		const list<list<string>>& openPhrases,
 		const list<string>& unlockPhrases,
@@ -18,11 +19,12 @@ public:
 	~Door();
 
 	void setStateValue(int& stateValue);
-	int setToUnlocked();
+	void setToUnlocked();
+	void setLockedToDefault();
 
 	// LOCKING AND OPENING
 	//
-	// Returns: 0 if door is already unlocked, 1 if successfully unlocked, 2 if the key does not fit
+	// Returns: 0 if door is already undefaultLocked, 1 if successfully undefaultLocked, 2 if the key does not fit
 	string unlock(int& keyID);
 	//
 	// Returns 0 if door cannot be opened, 1 if door successfully opens
@@ -36,7 +38,11 @@ private:
 	int			_doorState;		// Similar to item state
 	
 	list<int>*		_destinationRoomID;	// _roomID of the room on the other side of the door
-	list<int>*		_locked;		// Locked status: 0 if unlocked, 1 if locked
+	
+	list<int>*		_defaultLocked;	// defaultLocked status: 0 if undefaultLocked, 1 if defaultLocked
+	list<int>*		_unlockedValue;
+	list<int>**		_lockedPointer;
+
 	list<int>*		_keyID;			// _itemID of teh key to the door, if any. If not lockable, _keyID = 0.
 	list<list<string>>*	_openPhrases;		// List of use command outputs
 	list<string>*		_unlockPhrases;		// List of unlock command outputs
@@ -51,7 +57,8 @@ private:
 		const int& doorID,
 		const int& doorState,
 		const list<int>& destinationRoomID,
-		const list<int>& locked,
+		const list<int>& defaultLocked,
+		const list<int>& unlockedValue,
 		const list<int>& keyID,
 		const list<list<string>>& openPhrases,
 		const list<string>& unlockPhrases,
@@ -67,7 +74,7 @@ private:
 	int getKeyID();
 
 	// Returns the string at the argument position within _unlockPhrases: 
-	// 0 if door is already unlocked, 1 if successfully unlocked, 2 if the key does not fit
+	// 0 if door is already undefaultLocked, 1 if successfully undefaultLocked, 2 if the key does not fit
 	string getUnlockPhrase(int& lockSuccessValue);
 	//
 	// Returns 
