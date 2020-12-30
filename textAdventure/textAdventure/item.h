@@ -6,7 +6,7 @@
 // https://www.cplusplus.com/reference/list/list/
 
 
-
+	
 
 class Item
 {
@@ -14,12 +14,13 @@ public:
 	Item();
 	Item(const string& itemName,
 		const int& itemID,
+		const list<string>& statePhrases,
 		const int& itemState,
 		const list<string>& lookPhrases,
 		const list<int>& lookFlag,
 		const list<string>& takePhrases,
 		const list<int>& takeFlag,
-		const list<list<tuple<string, int, int>>>& usableWithList,
+		const list<list<tuple<int, string>>>& usableWithList,
 		const list<string>& searchPhrases,
 		const list<int>& searchFlag,
 		const list<Item>& itemsContained,
@@ -30,12 +31,22 @@ public:
 	Item(const Item& anItem);
 	~Item();
 
-	int getItemID();
-	string getItemName();
 
+	string getItemName();
+	int getItemID();
+	
+	string getStatePhrase();
 	string getLookPhrase();
 	string getTakePhrase();
-	
+	// Returns 0 if the item is not on the use list for this item state
+	// Otherwise returns 1 and fills in the usePhrase with the appropriate success message
+	int getUsePhrase(int& itemID, string& usePhrase);
+	string getSearchPhrase();
+	string getClimbPhrase();
+	string getEquipPhrase();
+	string getListOfItemsContained();
+
+
 	string useItemWith(Door& aDoor);
 	string useItemWith(Item& anItem);
 
@@ -45,7 +56,9 @@ private:
 
 	string*		_itemName;
 	int		_itemID;
+
 	int		_itemState;
+	list<string>*	_statePhrases;
 
 	list<string>*	_lookPhrases;	// List of look command outputs
 	list<int>*	_lookFlag;
@@ -53,7 +66,7 @@ private:
 	list<string>*	_takePhrases;	// List of take command outputs
 	list<int>*	_takeFlag;
 
-	list<list<tuple<string, int, int>>>* _usableWithList;
+	list<list<tuple<int, string>>>* _usableWithList;
 
 	list<string>*	_searchPhrases;
 	list<int>*	_searchFlag;
@@ -65,17 +78,16 @@ private:
 	list<string>*	_equipPhrases;
 	list<int>*	_equipFlag;
 
-	
 
-	int initialize(
-		const string& itemName,
+	int initialize(const string& itemName,
 		const int& itemID,
+		const list<string>& statePhrases,
 		const int& itemState,
 		const list<string>& lookPhrases,
 		const list<int>& lookFlag,
 		const list<string>& takePhrases,
 		const list<int>& takeFlag,
-		const list<list<tuple<string, int, int>>>& usableWithList,
+		const list<list<tuple<int, string>>>& usableWithList,
 		const list<string>& searchPhrases,
 		const list<int>& searchFlag,
 		const list<Item>& itemsContained,
@@ -86,9 +98,7 @@ private:
 	int deleteItem();
 
 	string getStateValue(list<string>& aList, int& phraseState);
-
-	// Flags
-
+	int getStateValue(list<int>& aList, int& listposition);
 };
 
 /*

@@ -4,6 +4,8 @@
 Door::Door()
 {
 	_doorID = 0;
+
+	_doorStatePhrases = nullptr;
 	_doorState = 0;
 
 	_destinationRoomID = nullptr;
@@ -20,6 +22,7 @@ Door::Door()
 
 Door::Door(
 	const int& doorID,
+	const list<string> doorStatePhrases,
 	const int& doorState,
 	const list<int>& destinationRoomID,
 	const list<int>& defaultLocked,
@@ -30,6 +33,7 @@ Door::Door(
 	const list<string>& lookPhrases,
 	const list<int>& lookFlag)
 {
+	_doorStatePhrases = nullptr;
 	_destinationRoomID = nullptr;
 	_defaultLocked = nullptr;
 	_unlockedValue = nullptr;
@@ -42,6 +46,7 @@ Door::Door(
 	_lookFlag = nullptr;
 
 	initialize(doorID, 
+		doorStatePhrases,
 		doorState,
 		destinationRoomID,
 		defaultLocked,
@@ -60,6 +65,7 @@ Door::~Door()
 
 int Door::initialize(
 	const int& doorID,
+	const list<string> doorStatePhrases,
 	const int& doorState,
 	const list<int>& destinationRoomID,
 	const list<int>& defaultLocked,
@@ -76,10 +82,13 @@ int Door::initialize(
 
 	if (successValue != 0)
 	{
+		// Use the list copy constructor to clone the incoming lists
+
 		_doorID = doorID;
+
+		_doorStatePhrases = new list<string>(doorStatePhrases);
 		_doorState = doorState;
 
-		// Use the list copy constructor to clone the incoming lists
 		_destinationRoomID = new list<int>(destinationRoomID);
 		_defaultLocked = new list<int>(defaultLocked);
 		_unlockedValue = new list<int>(unlockedValue);
@@ -134,6 +143,12 @@ int Door::deleteDoor()
 
 	return successValue;
 }
+
+int Door::getDoorState()
+{
+	return _doorState;
+}
+
 
 // Get _destination room ID for current _doorState
 int Door::getDestinationRoomID()
@@ -209,6 +224,11 @@ string Door::openDoor()
 {
 	int defaultLockedValue = getLockedValue();
 	return getOpenPhrase(defaultLockedValue);
+}
+
+string Door::getStatePhrase()
+{
+	return getStateValue(*_doorStatePhrases, _doorState);
 }
 
 string Door::getLookPhrase()

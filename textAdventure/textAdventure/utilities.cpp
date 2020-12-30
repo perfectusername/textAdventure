@@ -438,7 +438,7 @@ int deleteList(list<int>*& aList)
         return successValue;
 }
 //
-int deleteList(list<list<tuple<string, int, int>>>*& aList)
+int deleteList(list<list<tuple<int, string>>>*& aList)
 {
         int	successValue = 0;
 
@@ -476,6 +476,58 @@ int deleteList(list<list<string>>*& aList)
 
         return successValue;
 }
+
+// String creation utilities
+//
+// Add "a" or "an" to the beginning of a string
+string addAOrAn(const string& originalPhrase)
+{
+        string  returnString = "";
+        int     vowelCheck;
+
+        vowelCheck = checkForVowel(originalPhrase.at(0));
+
+        if (vowelCheck == 1)
+        {
+                returnString = "an " + originalPhrase;
+        }
+        else
+        {
+                returnString = "a " + originalPhrase;
+        }
+
+        return returnString;
+}
+
+
+int checkForVowel(const char& aChar)
+{
+        int     successValue = 0;
+
+        switch (tolower(aChar)) 
+        {
+        case 'a':
+                successValue = 1;
+                break;
+        case 'e':
+                successValue = 1;
+                break;
+        case 'i':
+                successValue = 1;
+                break;
+        case 'o':
+                successValue = 1;
+                break;
+        case 'u':
+                successValue = 1;
+                break;
+        }
+
+        return successValue;
+}
+
+
+
 
 // Design Tools
 //

@@ -7,6 +7,7 @@ class Door
 public:
 	Door();
 	Door(const int& doorID,
+		const list<string> doorStatePhrases,
 		const int& doorState,
 		const list<int>& destinationRoomID,
 		const list<int>& defaultLocked,
@@ -30,11 +31,18 @@ public:
 	// Returns 0 if door cannot be opened, 1 if door successfully opens
 	string openDoor();
 	//
+
+
+	int getDoorState();
 	string getLookPhrase();
+	string getStatePhrase();
+	
 
 
 private:
 	int			_doorID;		// ID number of this door. Will match the keyID.
+	
+	list<string>*		_doorStatePhrases;
 	int			_doorState;		// Similar to item state
 	
 	list<int>*		_destinationRoomID;	// _roomID of the room on the other side of the door
@@ -55,6 +63,7 @@ private:
 
 	int initialize(
 		const int& doorID,
+		const list<string> doorStatePhrases,
 		const int& doorState,
 		const list<int>& destinationRoomID,
 		const list<int>& defaultLocked,

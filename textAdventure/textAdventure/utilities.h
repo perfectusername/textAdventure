@@ -52,8 +52,15 @@ int takeFromList(list<int>& destinationList, list<int>& sourceList, int& valueTo
 // Deallocate a list
 int deleteList(list<string>*& aList);
 int deleteList(list<int>*& aList);
-int deleteList(list<list<tuple<string, int, int>>>*& aList);
+int deleteList(list<list<tuple<int, string>>>*& aList);
 int deleteList(list<list<string>>*& aList);
+
+
+// String creation utilities
+
+string addAOrAn(const string& originalPhrase);
+int checkForVowel(const char& aChar);
+
 
 // Design Tools
 void printCharacters(const int& width, const string& designCharacter);
