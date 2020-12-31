@@ -40,7 +40,7 @@ Item::Item(const list<string>& itemName,
 	const list<list<int>>& usableWithList,
 	const list<string>& searchPhrases,
 	const list<int>& searchFlag,
-	const list<Item*>& itemsContained,
+	const list<list<Item*>>& itemsContained,
 	const list<string>& climbPhrases,
 	const list<int>& climbFlag,
 	const list<string>& equipPhrases,
@@ -151,7 +151,7 @@ int Item::initialize(const list<string>& itemName,
 	const list<list<int>>& usableWithList,
 	const list<string>& searchPhrases,
 	const list<int>& searchFlag,
-	const list<Item*>& itemsContained,
+	const list<list<Item*>>& itemsContained,
 	const list<string>& climbPhrases,
 	const list<int>& climbFlag,
 	const list<string>& equipPhrases,
@@ -182,7 +182,7 @@ int Item::initialize(const list<string>& itemName,
 
 		_searchPhrases = new list<string>(searchPhrases);
 		_searchFlag = new list<int>(searchFlag);
-		_itemsContained = new list<Item*>(itemsContained);
+		_itemsContained = new list<list<Item*>>(itemsContained);
 
 		_climbPhrases = new list<string>(climbPhrases);
 		_climbFlag = new list<int>(climbFlag);
@@ -375,54 +375,6 @@ int Item::getStateValue(list<int>& aList, int& listposition)
 	return returnValue;
 }
 
-
-/*
-// Returns 1 for success, 0 for failure
-int Item::getUsePhrase(int& itemID, string& usePhrase)
-{
-	int successValue = 0;
-
-	// If the _usableWithList isn't null and it has more than 0 entries in it
-	if ((_usableWithList != nullptr) && (_usableWithList->size() > 0))
-	{
-		// Outer list iterator (the list of lists)
-		list<list<tuple<int, string>>>::iterator outerItr = _usableWithList->begin();
-
-		// While the outer list hasn't ended
-		// AND we haven't already found our match.
-		while ((outerItr != _usableWithList->end()) && (successValue != 1))
-		{
-			// Create an iterator for the inner list
-			list<tuple<int, string>>& singlePtr = *outerItr;
-			list<tuple<int, string>>::iterator innerItr = singlePtr.begin();
-
-			// Cycle through the inner list until:
-			// We haven't reached the end of the inner list
-			// AND we haven't found our matching item.
-			while ((innerItr != singlePtr.end()) && (successValue != 1))
-			{
-				// If the item ID matches
-				if (get<0>(*innerItr) == itemID)
-				{
-					// Copy the item's use string into usePhrase and set success to 1
-					usePhrase = get<1>(*innerItr);
-					successValue = 1;
-				}
-				// Otherwise the item ID doesn't match
-				// And we aren't at the end, so iterate the inner list
-				else
-				{
-					++innerItr;
-				}
-			}
-			++outerItr;
-		}
-	}
-
-	return successValue;
-}
-*/
-
 string Item::getSearchPhrase()
 {
 	int	searchFlagValue = getStateValue(*_searchFlag, _itemState);
@@ -463,29 +415,41 @@ string Item::getSearchPhrase()
 
 string Item::getListOfItemsContained()
 {
+	int	successValue = 0;
 	string	returnString = "";
 	int	itemsContainedSize;
-	int	i;
+	int	i = 0;
 
-	if ((_itemsContained != nullptr) && (_itemsContained->size() > 0))
+	itemsContainedSize = _itemsContained->size();
+
+	// If the size of the usable With list is greater than 0
+	if ((_itemsContained != nullptr) && (itemsContainedSize > 0))
 	{
-		itemsContainedSize = _itemsContained->size();
+		list<list<Item*>>::iterator nestedItr = _itemsContained->begin();
+		list<Item*> singlePtr;
+		list<Item*>::iterator singleItr;
 
-		// Create an iterator for the _itemsContained list
-		list<Item*>::iterator itemsContainedItr = _itemsContained->begin();
-
+		// Iterate to the correct state
+		while ((nestedItr != _itemsContained->end()) && (successValue != 1) && (i <= _itemState))
+		{
+			singlePtr = *nestedItr;
+			singleItr = singlePtr.begin();
+			++nestedItr;
+			++i;
+		}
+		itemsContainedSize = singlePtr.size();
 		// If there is only 1 item in the _itemsContained list
 		if (itemsContainedSize == 1)
 		{
-			returnString += addAOrAn((*itemsContainedItr)->getItemName());
+			returnString += addAOrAn((*singleItr)->getItemName());
 		}
 		// If there are only 2 words in the _itemsContained list
 		else if (itemsContainedSize == 2)
 		{
-			returnString += addAOrAn((*itemsContainedItr)->getItemName());
+			returnString += addAOrAn((*singleItr)->getItemName());
 			returnString += " and ";
-			++itemsContainedItr;
-			returnString += addAOrAn((*itemsContainedItr)->getItemName());
+			++singleItr;
+			returnString += addAOrAn((*singleItr)->getItemName());
 		}
 		// Otherwise, there are 3 or more words in the _itemsContained list
 		else
@@ -493,13 +457,13 @@ string Item::getListOfItemsContained()
 			i = 0;
 			while (i < (itemsContainedSize - 1))
 			{
-				returnString += addAOrAn((*itemsContainedItr)->getItemName());
+				returnString += addAOrAn((*singleItr)->getItemName());
 				returnString += ", ";
-				++itemsContainedItr;
+				++singleItr;
 				++i;
 			}
 			returnString += "and ";
-			returnString += addAOrAn((*itemsContainedItr)->getItemName());
+			returnString += addAOrAn((*singleItr)->getItemName());
 		}
 	}
 
@@ -508,84 +472,13 @@ string Item::getListOfItemsContained()
 
 string Item::getClimbPhrase()
 {
-	return "";
+	return getStateValue(*_climbPhrases, _itemState);
 }
 
 string Item::getEquipPhrase()
 {
-	return "";
+	return getStateValue(*_equipPhrases, _itemState);
 }
-
-/*
-string Item::useItemWith(Door& aDoor)
-{
-	return aDoor.unlock(_itemID);
-}
-*/
-
-/*
-string Item::useItemWith(Item& anItem, int& successValue)
-{
-	// https://www.geeksforgeeks.org/nested-list-in-c-stl/
-
-	successValue = 0;
-	int	i = 0;
-	
-	string	returnString = "";
-	string	stateStringBuffer = "";
-	string	firstBuffer = "";
-	string	secondBuffer = "";
-
-	// Check the first list to see if the object is on it
-	firstBuffer = this->checkUseList(anItem, successValue);
-	
-	// If the object *was* on the first list, then it also has to be on the second list
-	if (successValue == 1)
-	{
-		secondBuffer = anItem.checkUseList(*this, successValue);
-
-		// successValue should be 1 right now if the items are on each others lists
-		// in their current states.
-		if (successValue == 1)
-		{
-			// Build the return string
-			// If neither buffer has any return phrase
-			if ((firstBuffer == "") && (secondBuffer == ""))
-			{
-				returnString = "You use the " + this->getItemName();
-				returnString += " with the " + anItem.getItemName() + ".";
-			}
-			// If only the firstBuffer has a return phrase
-			else if ((firstBuffer != "") && (secondBuffer == ""))
-			{
-				returnString = firstBuffer;
-			}
-			// The only other two options left are:
-			//
-			// 1. Only the secondBuffer has a return phrase: ((firstBuffer == "") && (secondBuffer != ""))
-			// and
-			// 2. Both buffers have a return phrase: ((firstBuffer != "") && (secondBuffer != ""))
-			//
-			// In both cases we are just going to go with the secondBuffer,
-			// so we only need an "else" here.
-			else
-			{
-				returnString = secondBuffer;
-			}
-		}
-	}
-
-	// If the successValue is not 1 at this point you can't use the items together
-	// in this state.
-	if (successValue != 1)
-	{
-		returnString = "You can't use the " + this->getItemName();
-		returnString += " with the " + anItem.getItemName() + " right now.";
-	}
-
-	return returnString;
-}
-*/
 
 int Item::use(Item& withItem)
 {
@@ -642,45 +535,3 @@ int Item::checkUseList(int& itemID)
 
 	return successValue;
 }
-/*
-string Item::checkUseList(Item& anItem, int& successValue)
-{
-	int	i = 0;
-	int	itemID = 0;
-	string	returnString = "";
-
-	successValue = 0;
-
-	// If the size of the usable With list is greater than 0
-	if ((_usableWithList != nullptr) && (_usableWithList->size() > 0))
-	{
-		list<list<tuple<int, string>>>::iterator nestedItr = _usableWithList->begin();
-		list<tuple<int, string>> singlePtr;
-		list<tuple<int, string>>::iterator singleItr;
-
-		// Iterate to the correct state
-		while ((nestedItr != _usableWithList->end()) && (successValue != 1) && (i <= _itemState))
-		{
-			singlePtr = *nestedItr;
-			singleItr = singlePtr.begin();
-			++nestedItr;
-			++i;
-		}
-		// Then iterate to the correct phrase
-		while ((singleItr != singlePtr.end()) && (successValue != 1))
-		{
-			if (get<0>(*singleItr) != anItem.getItemID())
-			{
-				++singleItr;
-			}
-			else
-			{
-				returnString = get<1>(*singleItr);
-				successValue = 1;
-			}
-		}
-	}
-
-	return returnString;
-}
-*/

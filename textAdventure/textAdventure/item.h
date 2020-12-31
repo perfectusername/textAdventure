@@ -23,7 +23,7 @@ public:
 		const list<list<int>>& usableWithList,
 		const list<string>& searchPhrases,
 		const list<int>& searchFlag,
-		const list<Item*>& itemsContained,
+		const list<list<Item*>>& itemsContained,
 		const list<string>& climbPhrases,
 		const list<int>& climbFlag,
 		const list<string>& equipPhrases,
@@ -79,7 +79,7 @@ private:
 
 	list<string>*	_searchPhrases;
 	list<int>*	_searchFlag;
-	list<Item*>*	_itemsContained;
+	list<list<Item*>>*	_itemsContained;
 
 	list<string>*	_climbPhrases;
 	list<int>*	_climbFlag;
@@ -99,7 +99,7 @@ private:
 		const list<list<int>>& usableWithList,
 		const list<string>& searchPhrases,
 		const list<int>& searchFlag,
-		const list<Item*>& itemsContained,
+		const list<list<Item*>>& itemsContained,
 		const list<string>& climbPhrases,
 		const list<int>& climbFlag,
 		const list<string>& equipPhrases,
