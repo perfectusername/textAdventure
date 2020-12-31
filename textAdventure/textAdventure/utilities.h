@@ -54,6 +54,7 @@ int deleteList(list<string>*& aList);
 int deleteList(list<int>*& aList);
 int deleteList(list<list<tuple<int, string>>>*& aList);
 int deleteList(list<list<string>>*& aList);
+int deleteList(list<list<int>>*& aList);
 
 
 // String creation utilities

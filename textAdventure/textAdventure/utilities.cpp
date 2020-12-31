@@ -456,8 +456,7 @@ int deleteList(list<list<tuple<int, string>>>*& aList)
 
         return successValue;
 }
-
-
+//
 int deleteList(list<list<string>>*& aList)
 {
         int successValue = 0;
@@ -476,6 +475,26 @@ int deleteList(list<list<string>>*& aList)
 
         return successValue;
 }
+//
+int deleteList(list<list<int>>*& aList)
+{
+        int successValue = 0;
+
+        if (aList != nullptr)
+        {
+                aList->clear();
+                delete aList;
+                aList = nullptr;
+        }
+
+        if (aList == nullptr)
+        {
+                successValue = 1;
+        }
+
+        return successValue;
+}
+//
 
 // String creation utilities
 //

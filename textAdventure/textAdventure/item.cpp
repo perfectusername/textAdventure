@@ -29,7 +29,7 @@ Item::Item()
 	_equipFlag = nullptr;
 }
 
-Item::Item(const string& itemName,
+Item::Item(const list<string>& itemName,
 	const int& itemID,
 	const list<string>& statePhrases,
 	const int& itemState,
@@ -37,10 +37,10 @@ Item::Item(const string& itemName,
 	const list<int>& lookFlag,
 	const list<string>& takePhrases,
 	const list<int>& takeFlag,
-	const list<list<tuple<int, string>>>& usableWithList,
+	const list<list<int>>& usableWithList,
 	const list<string>& searchPhrases,
 	const list<int>& searchFlag,
-	const list<Item>& itemsContained,
+	const list<Item*>& itemsContained,
 	const list<string>& climbPhrases,
 	const list<int>& climbFlag,
 	const list<string>& equipPhrases,
@@ -140,7 +140,7 @@ Item::~Item()
 
 
 // Initialize an Item object to the argument values
-int Item::initialize(const string& itemName,
+int Item::initialize(const list<string>& itemName,
 	const int& itemID,
 	const list<string>& statePhrases,
 	const int& itemState,
@@ -148,10 +148,10 @@ int Item::initialize(const string& itemName,
 	const list<int>& lookFlag,
 	const list<string>& takePhrases,
 	const list<int>& takeFlag,
-	const list<list<tuple<int, string>>>& usableWithList,
+	const list<list<int>>& usableWithList,
 	const list<string>& searchPhrases,
 	const list<int>& searchFlag,
-	const list<Item>& itemsContained,
+	const list<Item*>& itemsContained,
 	const list<string>& climbPhrases,
 	const list<int>& climbFlag,
 	const list<string>& equipPhrases,
@@ -163,7 +163,7 @@ int Item::initialize(const string& itemName,
 
 	if (successValue != 0)
 	{
-		_itemName = new string;
+		_itemName = new list<string>(itemName);
 		*_itemName = itemName;
 
 		_itemID = itemID;
@@ -178,11 +178,11 @@ int Item::initialize(const string& itemName,
 		_takePhrases = new list<string>(takePhrases);
 		_takeFlag = new list<int>(takeFlag);
 
-		_usableWithList = new list<list<tuple<int, string>>>(usableWithList);
+		_usableWithList = new list<list<int>>(usableWithList);
 
 		_searchPhrases = new list<string>(searchPhrases);
 		_searchFlag = new list<int>(searchFlag);
-		_itemsContained = new list<Item>(itemsContained);
+		_itemsContained = new list<Item*>(itemsContained);
 
 		_climbPhrases = new list<string>(climbPhrases);
 		_climbFlag = new list<int>(climbFlag);
@@ -202,12 +202,7 @@ int Item::deleteItem()
 {
 	int successValue = 0;
 
-	if (_itemName != nullptr)
-	{
-		delete _itemName;
-		_itemName = nullptr;
-	}
-
+	deleteList(_itemName);
 	_itemID = 0;
 	_itemState = 0;
 	deleteList(_statePhrases);
@@ -268,7 +263,7 @@ int Item::display()
 	if ((_itemName != nullptr) && (_lookPhrases != nullptr))
 	{
 		int i = 0;
-		cout << "Item name: " << *_itemName << endl;
+		cout << "Item name: " << getItemName() << endl;
 		cout << "Item ID: " << _itemID << endl;
 		cout << "Item state: " << _itemState << endl;
 		
@@ -303,10 +298,19 @@ int Item::display()
 	return successValue;
 }
 
+void Item::setItemState(int& newState)
+{
+	_itemState = newState;
+}
 
 int Item::getItemID()
 {
 	return _itemID;
+}
+
+int Item::getItemState()
+{
+	return _itemState;
 }
 
 string Item::getStatePhrase()
@@ -316,7 +320,7 @@ string Item::getStatePhrase()
 
 string Item::getItemName()
 {
-	return *_itemName;
+	return getStateValue(*_itemName, _itemState);
 }
 
 string Item::getLookPhrase()
@@ -372,7 +376,7 @@ int Item::getStateValue(list<int>& aList, int& listposition)
 }
 
 
-
+/*
 // Returns 1 for success, 0 for failure
 int Item::getUsePhrase(int& itemID, string& usePhrase)
 {
@@ -417,6 +421,7 @@ int Item::getUsePhrase(int& itemID, string& usePhrase)
 
 	return successValue;
 }
+*/
 
 string Item::getSearchPhrase()
 {
@@ -431,21 +436,21 @@ string Item::getSearchPhrase()
 		// AND must not be empty
 		if ((_itemsContained != nullptr) && (_itemsContained->size() > 0))
 		{
-			returnString = "You search the " + *_itemName + " and find that it contains " + getListOfItemsContained() + ".";
+			returnString = "You search the " + getItemName() + " and find that it contains " + getListOfItemsContained() + ".";
 		}
 		else
 		{
-			returnString = "You search the " + *_itemName + ", but it's empty.";
+			returnString = "You search the " + getItemName() + ", but it's empty.";
 		}
 	}
 	else
 	{
-		returnString += "You cannot search the " + *_itemName;
+		returnString += "You cannot search the " + getItemName();
 		stateString = getStatePhrase();
 
 		if (stateString != "")
 		{
-			returnString += "Because it is " + stateString + ".";
+			returnString += " because it is " + stateString + ".";
 		}
 		else
 		{
@@ -467,20 +472,20 @@ string Item::getListOfItemsContained()
 		itemsContainedSize = _itemsContained->size();
 
 		// Create an iterator for the _itemsContained list
-		list<Item>::iterator itemsContainedItr = _itemsContained->begin();
+		list<Item*>::iterator itemsContainedItr = _itemsContained->begin();
 
 		// If there is only 1 item in the _itemsContained list
 		if (itemsContainedSize == 1)
 		{
-			returnString += addAOrAn(itemsContainedItr->getItemName());
+			returnString += addAOrAn((*itemsContainedItr)->getItemName());
 		}
 		// If there are only 2 words in the _itemsContained list
 		else if (itemsContainedSize == 2)
 		{
-			returnString += addAOrAn(itemsContainedItr->getItemName());
+			returnString += addAOrAn((*itemsContainedItr)->getItemName());
 			returnString += " and ";
 			++itemsContainedItr;
-			returnString += addAOrAn(itemsContainedItr->getItemName());
+			returnString += addAOrAn((*itemsContainedItr)->getItemName());
 		}
 		// Otherwise, there are 3 or more words in the _itemsContained list
 		else
@@ -488,12 +493,13 @@ string Item::getListOfItemsContained()
 			i = 0;
 			while (i < (itemsContainedSize - 1))
 			{
-				returnString += addAOrAn(itemsContainedItr->getItemName());
+				returnString += addAOrAn((*itemsContainedItr)->getItemName());
 				returnString += ", ";
 				++itemsContainedItr;
+				++i;
 			}
 			returnString += "and ";
-			returnString += addAOrAn(itemsContainedItr->getItemName());
+			returnString += addAOrAn((*itemsContainedItr)->getItemName());
 		}
 	}
 
@@ -510,78 +516,171 @@ string Item::getEquipPhrase()
 	return "";
 }
 
-
+/*
 string Item::useItemWith(Door& aDoor)
 {
 	return aDoor.unlock(_itemID);
 }
+*/
 
-string Item::useItemWith(Item& anItem)
+/*
+string Item::useItemWith(Item& anItem, int& successValue)
 {
 	// https://www.geeksforgeeks.org/nested-list-in-c-stl/
 
-	int			successFlag = 0;
-	int			i = 0;
+	successValue = 0;
+	int	i = 0;
+	
+	string	returnString = "";
+	string	stateStringBuffer = "";
+	string	firstBuffer = "";
+	string	secondBuffer = "";
+
+	// Check the first list to see if the object is on it
+	firstBuffer = this->checkUseList(anItem, successValue);
+	
+	// If the object *was* on the first list, then it also has to be on the second list
+	if (successValue == 1)
+	{
+		secondBuffer = anItem.checkUseList(*this, successValue);
+
+		// successValue should be 1 right now if the items are on each others lists
+		// in their current states.
+		if (successValue == 1)
+		{
+			// Build the return string
+			// If neither buffer has any return phrase
+			if ((firstBuffer == "") && (secondBuffer == ""))
+			{
+				returnString = "You use the " + this->getItemName();
+				returnString += " with the " + anItem.getItemName() + ".";
+			}
+			// If only the firstBuffer has a return phrase
+			else if ((firstBuffer != "") && (secondBuffer == ""))
+			{
+				returnString = firstBuffer;
+			}
+			// The only other two options left are:
+			//
+			// 1. Only the secondBuffer has a return phrase: ((firstBuffer == "") && (secondBuffer != ""))
+			// and
+			// 2. Both buffers have a return phrase: ((firstBuffer != "") && (secondBuffer != ""))
+			//
+			// In both cases we are just going to go with the secondBuffer,
+			// so we only need an "else" here.
+			else
+			{
+				returnString = secondBuffer;
+			}
+		}
+	}
+
+	// If the successValue is not 1 at this point you can't use the items together
+	// in this state.
+	if (successValue != 1)
+	{
+		returnString = "You can't use the " + this->getItemName();
+		returnString += " with the " + anItem.getItemName() + " right now.";
+	}
+
+	return returnString;
+}
+*/
+
+int Item::use(Item& withItem)
+{
+	int successValue = 0;
+	int itemID;
+	
+	itemID = withItem.getItemID();
+	successValue = this->checkUseList(itemID);
+
+	if (successValue == 1)
+	{
+		itemID = this->getItemID();
+		successValue = withItem.checkUseList(itemID);
+	}
+
+	return successValue;
+}
+
+int Item::checkUseList(int& itemID)
+{
+	int successValue = 0;
+	int	i = 0;
+
 	
 
-	string			returnString = "You cannot use this item.";
+	// If the size of the usable With list is greater than 0
+	if ((_usableWithList != nullptr) && (_usableWithList->size() > 0))
+	{
+		list<list<int>>::iterator nestedItr = _usableWithList->begin();
+		list<int> singlePtr;
+		list<int>::iterator singleItr;
+
+		// Iterate to the correct state
+		while ((nestedItr != _usableWithList->end()) && (successValue != 1) && (i <= _itemState))
+		{
+			singlePtr = *nestedItr;
+			singleItr = singlePtr.begin();
+			++nestedItr;
+			++i;
+		}
+		// Then iterate to the correct phrase
+		while ((singleItr != singlePtr.end()) && (successValue != 1))
+		{
+			if (*singleItr != itemID)
+			{
+				++singleItr;
+			}
+			else
+			{
+				successValue = 1;
+			}
+		}
+	}
+
+	return successValue;
+}
+/*
+string Item::checkUseList(Item& anItem, int& successValue)
+{
+	int	i = 0;
+	int	itemID = 0;
+	string	returnString = "";
+
+	successValue = 0;
 
 	// If the size of the usable With list is greater than 0
 	if ((_usableWithList != nullptr) && (_usableWithList->size() > 0))
 	{
 		list<list<tuple<int, string>>>::iterator nestedItr = _usableWithList->begin();
+		list<tuple<int, string>> singlePtr;
+		list<tuple<int, string>>::iterator singleItr;
 
-		while ((nestedItr != _usableWithList->end()) && (successFlag != 1))
+		// Iterate to the correct state
+		while ((nestedItr != _usableWithList->end()) && (successValue != 1) && (i <= _itemState))
 		{
-			list<tuple<int, string>>& singlePtr = *nestedItr;
-			list<tuple<int, string>>::iterator singleItr = singlePtr.begin();
-
-			while ((singleItr != singlePtr.end()) && (successFlag != 1))
-			{
-				cout << get<1>(*singleItr);
-				++singleItr;
-			}
+			singlePtr = *nestedItr;
+			singleItr = singlePtr.begin();
 			++nestedItr;
-		}	
-	}
-
-	/*
-	list<list<int>> test{ {1, 2, 3}, {1, 2, 3} };
-	list<list<int>>::iterator nestedItr = test.begin();
-
-	while (nestedItr != test.end())
-	{
-		list<int>& singlePtr = *nestedItr;
-		list<int>::iterator singleItr = singlePtr.begin();
-
-		while (singleItr != singlePtr.end())
-		{
-			cout << *singleItr;
-			++singleItr;
-		}
-		++nestedItr;
-	}
-	*/
-
-
-
-	/*
-	string			returnString = "You cannot use this item.";
-
-	// If the size of the usable With list is greater than 0
-	if (anItem._usableWithList->size() > 0)
-	{
-		
-		currentTuple = anItem._usableWithList->begin();
-		int i = get<1>(currentTuple);
-		while ((get<1>(*currentTuple) != anItem._usableWithID->end()) && (successFlag != 1))
-		{
-			++ID;
 			++i;
 		}
-		// Check the _usableWith list
+		// Then iterate to the correct phrase
+		while ((singleItr != singlePtr.end()) && (successValue != 1))
+		{
+			if (get<0>(*singleItr) != anItem.getItemID())
+			{
+				++singleItr;
+			}
+			else
+			{
+				returnString = get<1>(*singleItr);
+				successValue = 1;
+			}
+		}
 	}
-	*/
 
 	return returnString;
 }
+*/

@@ -59,8 +59,6 @@ private:
 	list<int>*		_lookFlag;
 
 	
-	
-
 	int initialize(
 		const int& doorID,
 		const list<string> doorStatePhrases,

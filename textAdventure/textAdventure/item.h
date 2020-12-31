@@ -12,7 +12,7 @@ class Item
 {
 public:
 	Item();
-	Item(const string& itemName,
+	Item(const list<string>& itemName,
 		const int& itemID,
 		const list<string>& statePhrases,
 		const int& itemState,
@@ -20,10 +20,10 @@ public:
 		const list<int>& lookFlag,
 		const list<string>& takePhrases,
 		const list<int>& takeFlag,
-		const list<list<tuple<int, string>>>& usableWithList,
+		const list<list<int>>& usableWithList,
 		const list<string>& searchPhrases,
 		const list<int>& searchFlag,
-		const list<Item>& itemsContained,
+		const list<Item*>& itemsContained,
 		const list<string>& climbPhrases,
 		const list<int>& climbFlag,
 		const list<string>& equipPhrases,
@@ -31,30 +31,39 @@ public:
 	Item(const Item& anItem);
 	~Item();
 
+	void setItemState(int& newState);
 
 	string getItemName();
 	int getItemID();
+	int getItemState();
 	
 	string getStatePhrase();
 	string getLookPhrase();
 	string getTakePhrase();
-	// Returns 0 if the item is not on the use list for this item state
-	// Otherwise returns 1 and fills in the usePhrase with the appropriate success message
-	int getUsePhrase(int& itemID, string& usePhrase);
+	
 	string getSearchPhrase();
 	string getClimbPhrase();
 	string getEquipPhrase();
 	string getListOfItemsContained();
 
+	
 
-	string useItemWith(Door& aDoor);
-	string useItemWith(Item& anItem);
+
+	// Returns 0 if the item is not on the use list for this item state
+	// Otherwise returns 1 and fills in the usePhrase with the appropriate success message
+	// int getUsePhrase(int& itemID, string& usePhrase);
+
+	//string useItemWith(Door& aDoor);
+	//string useItemWith(Item& anItem, int& successValue);
+	//string checkUseList(Item& anItem, int& successValue);
+	
+	int use(Item& withItem);
 
 	int display();
 
 private:
 
-	string*		_itemName;
+	list<string>*	_itemName;
 	int		_itemID;
 
 	int		_itemState;
@@ -66,11 +75,11 @@ private:
 	list<string>*	_takePhrases;	// List of take command outputs
 	list<int>*	_takeFlag;
 
-	list<list<tuple<int, string>>>* _usableWithList;
+	list<list<int>>* _usableWithList;
 
 	list<string>*	_searchPhrases;
 	list<int>*	_searchFlag;
-	list<Item>*	_itemsContained;
+	list<Item*>*	_itemsContained;
 
 	list<string>*	_climbPhrases;
 	list<int>*	_climbFlag;
@@ -79,7 +88,7 @@ private:
 	list<int>*	_equipFlag;
 
 
-	int initialize(const string& itemName,
+	int initialize(const list<string>& itemName,
 		const int& itemID,
 		const list<string>& statePhrases,
 		const int& itemState,
@@ -87,10 +96,10 @@ private:
 		const list<int>& lookFlag,
 		const list<string>& takePhrases,
 		const list<int>& takeFlag,
-		const list<list<tuple<int, string>>>& usableWithList,
+		const list<list<int>>& usableWithList,
 		const list<string>& searchPhrases,
 		const list<int>& searchFlag,
-		const list<Item>& itemsContained,
+		const list<Item*>& itemsContained,
 		const list<string>& climbPhrases,
 		const list<int>& climbFlag,
 		const list<string>& equipPhrases,
@@ -99,6 +108,8 @@ private:
 
 	string getStateValue(list<string>& aList, int& phraseState);
 	int getStateValue(list<int>& aList, int& listposition);
+
+	int checkUseList(int& itemID);
 };
 
 /*
