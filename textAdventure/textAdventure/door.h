@@ -25,7 +25,7 @@ public:
 
 	// LOCKING AND OPENING
 	//
-	// Returns: 0 if door is already undefaultLocked, 1 if successfully undefaultLocked, 2 if the key does not fit
+	// Returns: 0 if door is already unlocked, 1 if successfully unlocked, 2 if the key does not fit
 	string unlock(int& keyID);
 	//
 	// Returns 0 if door cannot be opened, 1 if door successfully opens

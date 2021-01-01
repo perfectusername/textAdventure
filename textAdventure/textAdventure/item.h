@@ -6,7 +6,6 @@
 // https://www.cplusplus.com/reference/list/list/
 
 
-	
 
 class Item
 {
