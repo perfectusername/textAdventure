@@ -107,7 +107,7 @@ int Door::initialize(
 }
 
 
-// Deallocate the contents of an Item object
+// Deallocate the contents of an ItemCoreDetails object
 int Door::deleteDoor()
 {
 	int successValue = 0;

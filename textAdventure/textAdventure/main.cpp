@@ -4,26 +4,26 @@
 // Door functions
 void look(Door& aDoor);
 void open(Door& aDoor);
-void unlock(Door& aDoor, Item& aKey);
+void unlock(Door& aDoor, ItemCore& aKey);
 
 
-// Item functions
-void look(Item& anItem);
-void take(Item& anItem);
-void use(Item& anItem, Item& withItem);
-void search(Item& anItem);
-void climb(Item& anItem);
-void equip(Item& anItem);
+// ItemCore functions
+void look(ItemCore& anItemCore);
+void take(ItemCore& anItemCore);
+void use(ItemCore& anItemCore, ItemCore& withItemCore);
+void search(ItemCore& anItemCore);
+void climb(ItemCore& anItemCore);
+void equip(ItemCore& anItemCore);
 
 
 int main()
 {
 	//////////////////////////////////////////////////////////////////
-	// Item testing
+	// ItemCore testing
 
 
 	/*
-		Item: Key
+		ItemCore: Key
 
 		States:	0 - Normal
 	*/
@@ -51,7 +51,7 @@ int main()
 		{ 
 			// State 0 (normal)
 			{
-				// Item 0: (the table itself)
+				// ItemCore 0: (the table itself)
 				{
 					42069
 				}
@@ -62,7 +62,7 @@ int main()
 
 	list<string>	searchPhrasesBuffer{ "You examine the markings on the key and see a row of elephants engraved along the outside edge." };
 	list<int>	searchFlagBuffer{ 1 };
-	list<list<Item*>>	itemsContainedBuffer{};
+	list<list<ItemCore*>>	itemsContainedBuffer{};
 
 	list<string>	climbPhrasesBuffer{ "You put the key on the ground and stand on top of it for a while. Then you pick it back up." };
 	list<int>	climbFlagBuffer{ 1 };
@@ -71,7 +71,7 @@ int main()
 	list<int>	equipFlagBuffer{ 0 };
 
 
-	Item	key(itemNameBuffer,
+	ItemCore	key(itemNameBuffer,
 		itemIDBuffer,
 		statePhrasesBuffer,
 		itemStateBuffer,
@@ -94,7 +94,7 @@ int main()
 	////////////////////////////////////////////////////////
 	// Create match
 	/*
-		Item: match
+		ItemCore: match
 
 		States:	0 - unlit
 			1 - lit
@@ -129,7 +129,7 @@ int main()
 		{
 			// State 0 (unlit)
 			{
-				// Item 0: (the table)
+				// ItemCore 0: (the table)
 				{
 				}
 			},
@@ -163,7 +163,7 @@ int main()
 	equipFlagBuffer = { 0, 0 };
 	
 
-	Item	match(itemNameBuffer,
+	ItemCore	match(itemNameBuffer,
 		itemIDBuffer,
 		statePhrasesBuffer,
 		itemStateBuffer,
@@ -185,7 +185,7 @@ int main()
 	// Create matchbox
 
 	/*
-		Item: Matchbox
+		ItemCore: Matchbox
 
 		States:	0 - normal
 	*/
@@ -217,7 +217,7 @@ int main()
 		{
 			// State 0 (normal)
 			{
-				// Item 0: (the table itself)
+				// ItemCore 0: (the table itself)
 				{
 					1
 				}
@@ -243,7 +243,7 @@ int main()
 	equipFlagBuffer = { 0 };
 
 
-	Item	matchbox(itemNameBuffer,
+	ItemCore	matchbox(itemNameBuffer,
 		itemIDBuffer,
 		statePhrasesBuffer,
 		itemStateBuffer,
@@ -261,7 +261,7 @@ int main()
 		equipFlagBuffer);
 
 	/*
-	Item: Table
+	ItemCore: Table
 
 	States:	0 - Normal (drawer closed)
 		1 - On fire
@@ -342,7 +342,7 @@ int main()
 	equipFlagBuffer = { 0, 0 , 1 };
 
 
-	Item	table(
+	ItemCore	table(
 		itemNameBuffer,
 		itemIDBuffer,
 		statePhrasesBuffer,
@@ -544,57 +544,57 @@ int main()
 
 
 	////////////////////////////////////////////////////
-	// Item testing
+	// ItemCore testing
 	// LOOK
 	cout << endl;
 	cout << "//////////////////////////////////" << endl;
 	cout << "ITEM: LOOK" << endl << endl;
 
 	itemStateBuffer = 0;
-	key.setItemState(itemStateBuffer);
+	key.setItemCoreState(itemStateBuffer);
 	look(key);
 	cout << endl;
 
 	itemStateBuffer = 0;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	look(table);
 	cout << endl;
 
 	itemStateBuffer = 1;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	look(table);
 	cout << endl;
 
 	itemStateBuffer = 2;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	look(table);
 	cout << endl;
 
 
 	////////////////////////////////////////////////////
-	// Item testing
+	// ItemCore testing
 	// TAKE
 	cout << endl;
 	cout << "//////////////////////////////////" << endl;
 	cout << "ITEM: TAKE" << endl << endl;
 
 	itemStateBuffer = 0;
-	key.setItemState(itemStateBuffer);
+	key.setItemCoreState(itemStateBuffer);
 	take(key);
 	cout << endl;
 
 	itemStateBuffer = 0;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	take(table);
 	cout << endl;
 
 	itemStateBuffer = 1;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	take(table);
 	cout << endl;
 
 	itemStateBuffer = 2;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	take(table);
 	cout << endl;
 
@@ -604,25 +604,25 @@ int main()
 	cout << "ITEM: USE TWO ITEMS TOGETHER" << endl << endl;
 
 	itemStateBuffer = 0;
-	match.setItemState(itemStateBuffer);
-	table.setItemState(itemStateBuffer);
+	match.setItemCoreState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	use(match, table);
 	cout << endl;
 
 	cout << endl;
 	itemStateBuffer = 1;
-	match.setItemState(itemStateBuffer);
+	match.setItemCoreState(itemStateBuffer);
 	use(match, table);
 	cout << endl;
 
 	cout << endl;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	use(match, table);
 	cout << endl;
 
 	cout << endl;
 	itemStateBuffer = 2;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	use(match, table);
 	cout << endl;
 
@@ -632,17 +632,17 @@ int main()
 	cout << "ITEM: SEARCH" << endl << endl;
 
 	itemStateBuffer = 0;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	search(table);
 	cout << endl;
 
 	itemStateBuffer = 1;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	search(table);
 	cout << endl;
 
 	itemStateBuffer = 2;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	search(table);
 	cout << endl;
 
@@ -653,17 +653,17 @@ int main()
 	cout << "ITEM: CLIMB" << endl << endl;
 
 	itemStateBuffer = 0;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	climb(table);
 	cout << endl;
 
 	itemStateBuffer = 1;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	climb(table);
 	cout << endl;
 
 	itemStateBuffer = 2;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	climb(table);
 	cout << endl;
 	
@@ -674,17 +674,17 @@ int main()
 	cout << "ITEM: EQUIP" << endl << endl;
 
 	itemStateBuffer = 0;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	equip(table);
 	cout << endl;
 
 	itemStateBuffer = 1;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	equip(table);
 	cout << endl;
 
 	itemStateBuffer = 2;
-	table.setItemState(itemStateBuffer);
+	table.setItemCoreState(itemStateBuffer);
 	equip(table);
 	cout << endl;
 
@@ -733,9 +733,9 @@ void open(Door& aDoor)
 	cout << aDoor.openDoor() << endl;
 }
 //
-void unlock(Door& aDoor, Item& aKey)
+void unlock(Door& aDoor, ItemCore& aKey)
 {
-	int	keyID = aKey.getItemID();
+	int	keyID = aKey.getItemCoreID();
 	string	statePhrase = aDoor.getStatePhrase();
 
 	cout << "STATE " << aDoor.getDoorState() << ":";
@@ -750,17 +750,17 @@ void unlock(Door& aDoor, Item& aKey)
 	}
 
 	cout << "==================" << endl;
-	cout << "You try to unlock the door with a " << aKey.getItemName() << ". ";
+	cout << "You try to unlock the door with a " << aKey.getItemCoreName() << ". ";
 	cout << aDoor.unlock(keyID) << endl;
 }
 
 
-// Item test functions
-void look(Item& anItem)
+// ItemCore test functions
+void look(ItemCore& anItemCore)
 {
-	string	statePhrase = anItem.getStatePhrase();
+	string	statePhrase = anItemCore.getStatePhrase();
 
-	cout << "STATE " << anItem.getItemState() << ":";
+	cout << "STATE " << anItemCore.getItemCoreState() << ":";
 
 	if (statePhrase != "")
 	{
@@ -772,15 +772,15 @@ void look(Item& anItem)
 	}
 
 	cout << "===============" << endl;
-	cout << "You look at the " << anItem.getItemName() << ": ";
-	cout << anItem.getLookPhrase() << endl;
+	cout << "You look at the " << anItemCore.getItemCoreName() << ": ";
+	cout << anItemCore.getLookPhrase() << endl;
 }
 //
-void take(Item& anItem)
+void take(ItemCore& anItemCore)
 {
-	string	statePhrase = anItem.getStatePhrase();
+	string	statePhrase = anItemCore.getStatePhrase();
 
-	cout << "STATE " << anItem.getItemState() << ":";
+	cout << "STATE " << anItemCore.getItemCoreState() << ":";
 
 	if (statePhrase != "")
 	{
@@ -792,17 +792,17 @@ void take(Item& anItem)
 	}
 
 	cout << "===============" << endl;
-	cout << "You try to take the " << anItem.getItemName() << ": ";
-	cout << anItem.getTakePhrase() << endl;
+	cout << "You try to take the " << anItemCore.getItemCoreName() << ": ";
+	cout << anItemCore.getTakePhrase() << endl;
 }
 
-void use(Item& anItem, Item& withItem)
+void use(ItemCore& anItemCore, ItemCore& withItemCore)
 {
 	int	successValue = 0;
 	int	itemID = 0;
-	string	statePhrase = anItem.getStatePhrase();
+	string	statePhrase = anItemCore.getStatePhrase();
 
-	cout << anItem.getItemName() << " state " << anItem.getItemState();
+	cout << anItemCore.getItemCoreName() << " state " << anItemCore.getItemCoreState();
 
 	if (statePhrase != "")
 	{
@@ -814,9 +814,9 @@ void use(Item& anItem, Item& withItem)
 	}
 
 
-	statePhrase = withItem.getStatePhrase();
+	statePhrase = withItemCore.getStatePhrase();
 
-	cout << withItem.getItemName() << " state " << withItem.getItemState();
+	cout << withItemCore.getItemCoreName() << " state " << withItemCore.getItemCoreState();
 
 	if (statePhrase != "")
 	{
@@ -829,27 +829,27 @@ void use(Item& anItem, Item& withItem)
 
 	cout << endl;
 	cout << "================================================================" << endl;
-	cout << "You try to use the " << anItem.getItemName() << " with the " << withItem.getItemName() << ": ";
-	itemID = withItem.getItemID();
-	successValue = anItem.use(withItem);
+	cout << "You try to use the " << anItemCore.getItemCoreName() << " with the " << withItemCore.getItemCoreName() << ": ";
+	itemID = withItemCore.getItemCoreID();
+	successValue = anItemCore.use(withItemCore);
 
 	if (successValue == 1)
 	{
-		cout << "You can use the " << anItem.getItemName();
-		cout << " with the " << withItem.getItemName() << ".";
+		cout << "You can use the " << anItemCore.getItemCoreName();
+		cout << " with the " << withItemCore.getItemCoreName() << ".";
 	}
 	else if (successValue == 0)
 	{
-		cout << "You cannot use the " << anItem.getItemName();
-		cout << " with the " << withItem.getItemName() << ".";
+		cout << "You cannot use the " << anItemCore.getItemCoreName();
+		cout << " with the " << withItemCore.getItemCoreName() << ".";
 	}
 }
 //
-void search(Item& anItem)
+void search(ItemCore& anItemCore)
 {
-	string	statePhrase = anItem.getStatePhrase();
+	string	statePhrase = anItemCore.getStatePhrase();
 
-	cout << "STATE " << anItem.getItemState() << ":";
+	cout << "STATE " << anItemCore.getItemCoreState() << ":";
 
 	if (statePhrase != "")
 	{
@@ -861,15 +861,15 @@ void search(Item& anItem)
 	}
 
 	cout << "===============" << endl;
-	cout << "You try to search the " << anItem.getItemName() << ": ";
-	cout << anItem.getSearchPhrase() << endl;
+	cout << "You try to search the " << anItemCore.getItemCoreName() << ": ";
+	cout << anItemCore.getSearchPhrase() << endl;
 }
 //
-void climb(Item& anItem)
+void climb(ItemCore& anItemCore)
 {
-	string	statePhrase = anItem.getStatePhrase();
+	string	statePhrase = anItemCore.getStatePhrase();
 
-	cout << "STATE " << anItem.getItemState() << ":";
+	cout << "STATE " << anItemCore.getItemCoreState() << ":";
 
 	if (statePhrase != "")
 	{
@@ -881,15 +881,15 @@ void climb(Item& anItem)
 	}
 
 	cout << "===============" << endl;
-	cout << "You try to equip the " << anItem.getItemName() << ": ";
-	cout << anItem.getClimbPhrase() << endl;
+	cout << "You try to equip the " << anItemCore.getItemCoreName() << ": ";
+	cout << anItemCore.getClimbPhrase() << endl;
 }
 //
-void equip(Item& anItem)
+void equip(ItemCore& anItemCore)
 {
-	string	statePhrase = anItem.getStatePhrase();
+	string	statePhrase = anItemCore.getStatePhrase();
 
-	cout << "STATE " << anItem.getItemState() << ":";
+	cout << "STATE " << anItemCore.getItemCoreState() << ":";
 
 	if (statePhrase != "")
 	{
@@ -901,6 +901,6 @@ void equip(Item& anItem)
 	}
 
 	cout << "===============" << endl;
-	cout << "You try to climb onto the " << anItem.getItemName() << ": ";
-	cout << anItem.getEquipPhrase() << endl;
+	cout << "You try to climb onto the " << anItemCore.getItemCoreName() << ": ";
+	cout << anItemCore.getEquipPhrase() << endl;
 }

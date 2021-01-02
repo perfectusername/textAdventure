@@ -44,7 +44,7 @@ void stringCopy(char destination[], const int& stringLength, const char source[]
 
 // List Utilities
 //
-// Take Item from list
+// Take ItemCoreDetails from list
 int takeFromListl(list<string>& destinationList, list<string>& sourceList, int& stringPosition);
 int takeFromList(list<int>& destinationList, list<int>& sourceList, int& valueToRemove);
 // Deallocation Utilities

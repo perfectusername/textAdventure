@@ -1,4 +1,4 @@
-#include "inventory.h"
+#include "item.h"
 
 
 
@@ -11,14 +11,14 @@ private:
 	int		_roomID;
 	string		_roomDescription;
 
-	list<Item>*	_itemList;
+	list<ItemCore>*	_itemList;
 	list<Door>*	_doorList;
 	//GameEvent* _gameEventList;
 };
 
 /*
 	Rooms contain:
-		- Items
+		- ItemCores
 		- Doors
 		- GameEvents
 		- NPC?
