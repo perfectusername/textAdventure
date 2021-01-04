@@ -96,7 +96,7 @@ private:
 
 	
 
-	// NOTE: Keys will just be regular ItemCoreDetails objects. The _itemID will match the _doorID that it opens
+	// NOTE: Keys will just be regular ItemDetails objects. The _itemID will match the _doorID that it opens
 	//	 There will be more items than doors, so the _itemID should have its ID picked first
 	//	 then the _doorID will be copied from it.
 };
